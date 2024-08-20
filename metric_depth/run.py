@@ -2,7 +2,7 @@ import argparse
 import cv2
 import glob
 import matplotlib
-import numpy as np
+import numpy as numpy
 import os
 import torch
 
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     }
     
     depth_anything = DepthAnythingV2(**{**model_configs[args.encoder], 'max_depth': args.max_depth})
-    depth_anything.load_state_dict(torch.load(args.load_from, map_location='cpu'))
+    depth_anything.load_state_dict(torch.load(args.load_from, map_location='cpu', weights_only=True))
     depth_anything = depth_anything.to(DEVICE).eval()
     
     if os.path.isfile(args.img_path):
@@ -61,21 +61,21 @@ if __name__ == '__main__':
         
         if args.save_numpy:
             output_path = os.path.join(args.outdir, os.path.splitext(os.path.basename(filename))[0] + '_raw_depth_meter.npy')
-            np.save(output_path, depth)
+            numpy.save(output_path, depth)
         
         depth = (depth - depth.min()) / (depth.max() - depth.min()) * 255.0
-        depth = depth.astype(np.uint8)
+        depth = depth.astype(numpy.uint8)
         
         if args.grayscale:
-            depth = np.repeat(depth[..., np.newaxis], 3, axis=-1)
+            depth = numpy.repeat(depth[..., numpy.newaxis], 3, axis=-1)
         else:
-            depth = (cmap(depth)[:, :, :3] * 255)[:, :, ::-1].astype(np.uint8)
+            depth = (cmap(depth)[:, :, :3] * 255)[:, :, ::-1].astype(numpy.uint8)
         
         output_path = os.path.join(args.outdir, os.path.splitext(os.path.basename(filename))[0] + '.png')
         if args.pred_only:
             cv2.imwrite(output_path, depth)
         else:
-            split_region = np.ones((raw_image.shape[0], 50, 3), dtype=np.uint8) * 255
+            split_region = numpy.ones((raw_image.shape[0], 50, 3), dtype=numpy.uint8) * 255
             combined_result = cv2.hconcat([raw_image, split_region, depth])
             
             cv2.imwrite(output_path, combined_result)

@@ -64,7 +64,7 @@ def main():
 
     # Initialize the DepthAnythingV2 model with the specified configuration
     depth_anything = DepthAnythingV2(**{**model_configs[args.encoder], 'max_depth': args.max_depth})
-    depth_anything.load_state_dict(torch.load(args.load_from, map_location='cpu'))
+    depth_anything.load_state_dict(torch.load(args.load_from, map_location='cpu', weights_only=True))
     depth_anything = depth_anything.to(DEVICE).eval()
 
     # Get the list of image files to process

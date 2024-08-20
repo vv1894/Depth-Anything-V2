@@ -1,0 +1,2 @@
+# Project 2D images to point clouds:
+python depth_to_pointcloud.py --encoder vitb --load-from checkpoints/depth_anything_v2_metric_hypersim_vitb.pth --max-depth 20 --img-path assets/examples_2 --outdir depth_test
